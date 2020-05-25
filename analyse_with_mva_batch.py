@@ -237,7 +237,7 @@ def applyHEM(file, tree):
         if (random.uniform(0, 1) < 0.65):
           flag = 0
       else:
-        if ("SingleMuon_2018C" in file or "SingleMuon_2018D" in file or "EGamma_2018C" in file or "EGamma_2018D" in file):
+        if ("SingleMuon_2018C" in str(file) or "SingleMuon_2018D" in str(file) or "EGamma_2018C" in str(file) or "EGamma_2018D" in str(file)):
           flag = 0
   return flag
 
@@ -698,6 +698,9 @@ for i in  range(1):
     evtwt_LHEScaleDownWeight  = 1
     evtwt_LHEScaleUpWeight = 1
 
+    #Apply HEM
+    evtwt  *= applyHEM(file, entry)
+
     if (isMC(file)):
       random.seed(0)
       #nBTag  = 0
@@ -748,8 +751,6 @@ for i in  range(1):
       #Define weights here 
       #muHPtSF = applyHighPtMuonSF (file, entry, Lep4vec.P(), Lep4vec.Eta())
       #evtwt *= muHPtSF
-      #Apply HEM
-      evtwt  *= applyHEM(file, entry)
       topptweight=1
       topptweightUp=1
       topptweightDown=1
