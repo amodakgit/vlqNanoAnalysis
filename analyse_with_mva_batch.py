@@ -394,7 +394,7 @@ def cutFlow(file, entry, crType, leadjetBTag, HT_Central, nBTag, MassT, MET_pt, 
     if not (entry.FwdJetPt > -99 and abs(entry.FwdJetEta) > -99): return 16
     return 17
 
-def fillHisto(cntR, channeL, file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt, MET_phi, LeadJet_pt, sys, evtwt):
+def fillHisto(cntR, channeL, file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt, MET_phi, LeadJet_pt, sys, evtwt):
     iso03  = 999
     iso04  = 999
     if (channeL == "Mu"):
@@ -428,6 +428,9 @@ def fillHisto(cntR, channeL, file, entry, itr, nBTag, MassT, HT_Central, nCentra
     hmap[str(channeL)+"_"+str(cntR)+"_DPHIMetJet_"+str(sys)+"_"+str(itr)].Fill(entry.DPHI_JetMet, evtwt)
     hmap[str(channeL)+"_"+str(cntR)+"_FwdJetEta_"+str(sys)+"_"+str(itr)].Fill(entry.FwdJetEta, evtwt)
     hmap[str(channeL)+"_"+str(cntR)+"_FwdJetPt_"+str(sys)+"_"+str(itr)].Fill(entry.FwdJetPt, evtwt)
+    hmap[str(channeL)+"_"+str(cntR)+"_FwdJetPt_L_"+str(sys)+"_"+str(itr)].Fill(FwdJet_Pt_L, evtwt)
+    hmap[str(channeL)+"_"+str(cntR)+"_FwdJetPt_M_"+str(sys)+"_"+str(itr)].Fill(FwdJet_Pt_M, evtwt)
+    hmap[str(channeL)+"_"+str(cntR)+"_FwdJetPt_T_"+str(sys)+"_"+str(itr)].Fill(FwdJet_Pt_T, evtwt)
     hmap[str(channeL)+"_"+str(cntR)+"_Mass_"+str(sys)+"_"+str(itr)].Fill(entry.Mass, evtwt)
     hmap[str(channeL)+"_"+str(cntR)+"_Mass_v2_"+str(sys)+"_"+str(itr)].Fill(entry.Mass_v2, evtwt)
     hmap[str(channeL)+"_"+str(cntR)+"_RelIso03_"+str(sys)+"_"+str(itr)].Fill(iso03, evtwt)
@@ -562,7 +565,7 @@ for i in  range(1):
   channels = ["Mu", "Ele"]
   controlR = ["WJets", "TTJets", "Signal", "PreSig"]
   #controlR = ["wjet", "ttjet", "signal", "presig", "multijet"]
-  variables = {"LepPt":  [100, 0, 1000], "MET": [100, 0, 1000], "METphi": [100, -5, 5], "LepEta": [120, -3, 3], "ST": [300, 0, 3000], "ST_v2": [300, 0, 3000], "MT": [200, 0, 200], "HT": [300, 0, 3000], "DPHI": [100, -5, 5], "DPHILepMet": [100, -5, 5], "DR": [100, 0, 5], "DR_LepleadJet": [100, 0, 5], "JetPt": [200, 0, 2000], "JetEta": [100, -5, 5], "NBTags_DeepCSV": [5, -0.5, 4.5], "NBTags_DeepFLV": [5, -0.5, 4.5], "NJets": [20, 0, 20], "NCentralJets": [20, 0, 20], "NFwdJets": [20, 0, 20], "DPHIMetJet": [100, -5, 5], "FwdJetEta": [100, -5, 5], "FwdJetPt": [100, 0, 1000], "Mass": [300, 0, 3000], "Mass_v2": [300, 0, 3000], "Mass1b": [300, 0, 3000], "Mass1b_v2": [300, 0, 3000], "Mass2b": [300, 0, 3000], "Mass2b_v2": [300, 0, 3000], "RelIso03": [100, 0, 0.5], "RelIso04": [100, 0, 0.5], "WPt": [200, 0, 2000], "TranMom": [600, 0, 6000]}
+  variables = {"LepPt":  [100, 0, 1000], "MET": [100, 0, 1000], "METphi": [100, -5, 5], "LepEta": [120, -3, 3], "ST": [300, 0, 3000], "ST_v2": [300, 0, 3000], "MT": [200, 0, 200], "HT": [300, 0, 3000], "DPHI": [100, -5, 5], "DPHILepMet": [100, -5, 5], "DR": [100, 0, 5], "DR_LepleadJet": [100, 0, 5], "JetPt": [200, 0, 2000], "JetEta": [100, -5, 5], "NBTags_DeepCSV": [5, -0.5, 4.5], "NBTags_DeepFLV": [5, -0.5, 4.5], "NJets": [20, 0, 20], "NCentralJets": [20, 0, 20], "NFwdJets": [20, 0, 20], "DPHIMetJet": [100, -5, 5], "FwdJetEta": [100, -5, 5], "FwdJetPt": [100, 0, 1000], "Mass": [300, 0, 3000], "Mass_v2": [300, 0, 3000], "Mass1b": [300, 0, 3000], "Mass1b_v2": [300, 0, 3000], "Mass2b": [300, 0, 3000], "Mass2b_v2": [300, 0, 3000], "RelIso03": [100, 0, 0.5], "RelIso04": [100, 0, 0.5], "WPt": [200, 0, 2000], "TranMom": [600, 0, 6000], "FwdJetPt_L": [500, 0, 500], "FwdJetPt_M": [500, 0, 500], "FwdJetPt_T": [500, 0, 500]}
 
   variables_top = {"Pt_lmj_select": [100, 0, 1000], "Pt_lmj_select2": [100, 0, 1000], "Pt_lmj_select_alpha_up": [100, 0, 1000], "Pt_lmj_select_alpha_down": [100, 0, 1000], "Pt_lmj_select_beta_up": [100, 0, 1000], "Pt_lmj_select_beta_down": [100, 0, 1000], "Top_Score": [4, -0.5, 3.5], "Pt_lmj_select_beta_up2": [100, 0, 1000], "Pt_lmj_select_beta_down2": [100, 0, 1000], "ST_v2_def2": [300, 0, 3000], "ST_v2_beta_up2": [300, 0, 3000], "ST_v2_beta_down2": [300, 0, 3000]}
 
@@ -643,6 +646,9 @@ for i in  range(1):
     FwdJet_Pt_L = -999
     FwdJet_Pt_M = -999
     FwdJet_Pt_T = -999
+    fwdJeteta_L =  0
+    fwdJeteta_M =  0
+    fwdJeteta_T =  0
 
     for j in range(0, entry.nJet):
        if (Jet_pt(file, entry, j, "nominal") > 30 and JetID(entry.Jet_jetId[j]) >= 1): ##Changed
@@ -656,6 +662,16 @@ for i in  range(1):
 
          if (jet4vec.DeltaR(lepton4vec) < dR_lepClosestJet_v2 and Jet_pt(file, entry, j, "nominal") > 40 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Tight") >= 1 and abs(entry.Jet_eta[j]) < 2.4): 
            dR_lepClosestJet_v2 = jet4vec.DeltaR(lepton4vec)
+         
+         if (abs(entry.Jet_eta[j]) > abs(fwdJeteta_L)  and  abs(entry.Jet_eta[j]) > 2.4 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Loose") >= 1):
+           fwdJeteta_L = entry.Jet_eta[j]
+           FwdJet_Pt_L = Jet_pt(file, entry, j, "nominal")
+         if (abs(entry.Jet_eta[j]) > abs(fwdJeteta_L)  and  abs(entry.Jet_eta[j]) > 2.4 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Medium") >= 1):
+           fwdJeteta_M = entry.Jet_eta[j]
+           FwdJet_Pt_M = Jet_pt(file, entry, j, "nominal")
+         if (abs(entry.Jet_eta[j]) > abs(fwdJeteta_L)  and  abs(entry.Jet_eta[j]) > 2.4 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Tight") >= 1):
+           fwdJeteta_T = entry.Jet_eta[j]
+           FwdJet_Pt_T = Jet_pt(file, entry, j, "nominal")
 
     btagSF_0tag = 1
     btagSF_1tag = 1
@@ -831,43 +847,43 @@ for i in  range(1):
         hmap["Mu_WJets_Counter"].Fill(itr, evtwt_nominal)
         if (itr == 16):
           Mu_WJets_HT_vs_ST.Fill(HT_Central, entry.ST_v2, evtwt_nominal)
-          fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt, "nominal", evtwt_nominal)
+          fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt, "nominal", evtwt_nominal)
           if (doSys):
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,"topptweightUp", evtwt_topptweightUp)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,"topptweightDown", evtwt_topptweightDown)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt, "BTagSFUp", evtwt_BTagSFUp)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt, "BTagSFDown", evtwt_BTagSFDown)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupUp", evtwt_PileupUp)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupDown", evtwt_PileupDown)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
-            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,"topptweightUp", evtwt_topptweightUp)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,"topptweightDown", evtwt_topptweightDown)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt, "BTagSFUp", evtwt_BTagSFUp)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt, "BTagSFDown", evtwt_BTagSFDown)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupUp", evtwt_PileupUp)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupDown", evtwt_PileupDown)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
+            fillHisto("WJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
 
       elif (entry.Event_flag == 11 and entry.EleTrigFlag >= 1):
         hmap["Ele_WJets_Counter"].Fill(itr, evtwt_nominal)
         if (itr == 16):
           Ele_WJets_HT_vs_ST.Fill(HT_Central, entry.ST_v2, evtwt_nominal)
-          fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
+          fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
           if (doSys):
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightUp", evtwt_topptweightUp)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightDown", evtwt_topptweightDown)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFUp", evtwt_BTagSFUp)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFDown", evtwt_BTagSFDown)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupUp", evtwt_PileupUp)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupDown", evtwt_PileupDown)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
-            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightUp", evtwt_topptweightUp)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightDown", evtwt_topptweightDown)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFUp", evtwt_BTagSFUp)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFDown", evtwt_BTagSFDown)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupUp", evtwt_PileupUp)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupDown", evtwt_PileupDown)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
+            fillHisto("WJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
 
 
     #Signal Pre Selection
@@ -891,7 +907,7 @@ for i in  range(1):
       if (float(entry.Event_flag) == 13 and float(entry.MuonTrigFlag) >= 1):
         hmap["Mu_PreSig_Counter"].Fill(itr, evtwt_nominal)
         if (itr == 16):
-          fillHisto("PreSig", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
+          fillHisto("PreSig", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
 
         if (itr == 4 and doSkim):
           #Load tree containers
@@ -941,7 +957,7 @@ for i in  range(1):
       elif (entry.Event_flag == 11 and entry.EleTrigFlag >= 1):
         hmap["Ele_PreSig_Counter"].Fill(itr, evtwt_nominal)
         if (itr == 16):
-          fillHisto("PreSig", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
+          fillHisto("PreSig", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
 
         if (itr == 4 and doSkim):
           #Load tree containers
@@ -998,12 +1014,12 @@ for i in  range(1):
       if (float(entry.Event_flag) == 13 and float(entry.MuonTrigFlag) >= 1):
         hmap["Mu_Signal_Counter"].Fill(itr, evtwt_nominal)
         if (itr == 16):
-          fillHisto("Signal", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
+          fillHisto("Signal", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
 
       elif (entry.Event_flag == 11 and entry.EleTrigFlag >= 1):
         hmap["Ele_Signal_Counter"].Fill(itr, evtwt_nominal)
         if (itr == 16):
-          fillHisto("Signal", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
+          fillHisto("Signal", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
 
     #TTJets Selection
     #if (MET_Filters(file, entry) >= 1 and entry.Lepton_pt > 40 and abs(entry.Lepton_eta) < 2.1 and entry.LeadJet_pt > 200 and abs(entry.LeadJet_eta) < 2.4 and entry.DR_LepClosestJet <  1.5 and nBTag >= 2 and MET_pt(file, entry) > 60 and entry.ST_v2 > 200 and leadjetBTag  >= 1):
@@ -1069,23 +1085,23 @@ for i in  range(1):
       if (entry.Event_flag == 13 and entry.MuonTrigFlag >= 1 and (entry.nVetoMuons + entry.nVetoElectrons) == 1):
         hmap["Mu_TTJets_Counter"].Fill(itr, evtwt_nominal)
         if (itr == 16):
-          fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
+          fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
           if (doSys):
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightUp", evtwt_topptweightUp)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightDown", evtwt_topptweightDown)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFUp", evtwt_BTagSFUp)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFDown", evtwt_BTagSFDown)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupUp", evtwt_PileupUp)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupDown", evtwt_PileupDown)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
-            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "TTJets_ST_Scaling", evtwt_TTJets_ST_Scaling)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightUp", evtwt_topptweightUp)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightDown", evtwt_topptweightDown)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFUp", evtwt_BTagSFUp)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFDown", evtwt_BTagSFDown)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupUp", evtwt_PileupUp)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupDown", evtwt_PileupDown)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
+            fillHisto("TTJets", "Mu", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "TTJets_ST_Scaling", evtwt_TTJets_ST_Scaling)
 
         if (itr == 16):
           if (top_score == 0): 
@@ -1120,23 +1136,23 @@ for i in  range(1):
       elif (entry.Event_flag == 11 and entry.EleTrigFlag >= 1 and (entry.nVetoMuons + entry.nVetoElectrons) == 1):
         hmap["Ele_TTJets_Counter"].Fill(itr, evtwt_nominal)
         if (itr == 16):
-          fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
+          fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "nominal", evtwt_nominal)
           if (doSys):
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightUp", evtwt_topptweightUp)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightDown", evtwt_topptweightDown)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFUp", evtwt_BTagSFUp)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFDown", evtwt_BTagSFDown)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupUp", evtwt_PileupUp)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupDown", evtwt_PileupDown)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
-            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "TTJets_ST_Scaling", evtwt_TTJets_ST_Scaling)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightUp", evtwt_topptweightUp)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "topptweightDown", evtwt_topptweightDown)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFUp", evtwt_BTagSFUp)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "BTagSFDown", evtwt_BTagSFDown)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupUp", evtwt_PileupUp)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "PileupDown", evtwt_PileupDown)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
+            fillHisto("TTJets", "Ele", file, entry, itr, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.LeadJet_pt,  "TTJets_ST_Scaling", evtwt_TTJets_ST_Scaling)
 
 
         if (itr == 16):
@@ -1183,10 +1199,10 @@ for i in  range(1):
         elif (entry.Event_flag == 11 and entry.EleTrigFlag >= 1):
           CHL = "Ele"
         if ('Mu' in CHL or 'Ele' in CHL):
-          if (int(cutjerUp) == 17):   fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjerUp)-1, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "jerUp"), MET_phi(file, entry, "jerUp"), Jet_pt(file, entry, entry.LeadJet_idx, "jerUp"),  "jerUp", evtwt_nominal)
-          if (int(cutjerDown) == 17): fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjerDown)-1, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "jerDown"), MET_phi(file, entry, "jerDown"), Jet_pt(file, entry, entry.LeadJet_idx, "jerDown"), "jerDown", evtwt_nominal)
-          if (int(cutjesUp) == 17):   fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjesUp)-1, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "jesUp"), MET_phi(file, entry, "jesUp"), Jet_pt(file, entry, entry.LeadJet_idx, "jesUp"), "jesUp", evtwt_nominal)
-          if (int(cutjesDown) == 17): fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjesDown)-1, nBTag, MassT, HT_Central, nCentralJets_v2, MET_pt(file, entry, "jesDown"), MET_phi(file, entry, "jesDown"), Jet_pt(file, entry, entry.LeadJet_idx, "jesDown"),"jesDown", evtwt_nominal)
+          if (int(cutjerUp) == 17):   fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjerUp)-1, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "jerUp"), MET_phi(file, entry, "jerUp"), Jet_pt(file, entry, entry.LeadJet_idx, "jerUp"),  "jerUp", evtwt_nominal)
+          if (int(cutjerDown) == 17): fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjerDown)-1, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "jerDown"), MET_phi(file, entry, "jerDown"), Jet_pt(file, entry, entry.LeadJet_idx, "jerDown"), "jerDown", evtwt_nominal)
+          if (int(cutjesUp) == 17):   fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjesUp)-1, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "jesUp"), MET_phi(file, entry, "jesUp"), Jet_pt(file, entry, entry.LeadJet_idx, "jesUp"), "jesUp", evtwt_nominal)
+          if (int(cutjesDown) == 17): fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjesDown)-1, nBTag, MassT, HT_Central, nCentralJets_v2, FwdJet_Pt_L, FwdJet_Pt_M, FwdJet_Pt_T, MET_pt(file, entry, "jesDown"), MET_phi(file, entry, "jesDown"), Jet_pt(file, entry, entry.LeadJet_idx, "jesDown"),"jesDown", evtwt_nominal)
 
   #canv.Modified()
   #canv.Update()
