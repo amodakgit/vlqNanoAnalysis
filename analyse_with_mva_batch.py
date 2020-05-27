@@ -562,7 +562,7 @@ for i in  range(1):
   channels = ["Mu", "Ele"]
   controlR = ["WJets", "TTJets", "Signal", "PreSig"]
   #controlR = ["wjet", "ttjet", "signal", "presig", "multijet"]
-  variables = {"LepPt":  [100, 0, 1000], "MET": [100, 0, 1000], "METphi": [100, -5, 5], "LepEta": [120, -3, 3], "ST": [300, 0, 3000], "ST_v2": [300, 0, 3000], "MT": [200, 0, 200], "HT": [300, 0, 3000], "DPHI": [100, -5, 5], "DPHILepMet": [100, -5, 5], "DR": [100, 0, 5], "DR_LepleadJet": [100, 0, 5], "JetPt": [200, 0, 2000], "JetEta": [100, -5, 5], "NBTags_DeepCSV": [5, -0.5, 4.5], "NBTags_DeepFLV": [5, -0.5, 4.5], "NJets": [20, 0, 20], "NCentralJets": [20, 0, 20], "NFwdJets": [20, 0, 20], "DPHIMetJet": [100, -5, 5], "FwdJetEta": [100, -5, 5], "FwdJetPt": [100, 0, 1000], "Mass": [300, 0, 3000], "Mass_v2": [300, 0, 3000], "Mass1b": [300, 0, 3000], "Mass1b_v2": [300, 0, 3000], "Mass2b": [300, 0, 3000], "Mass2b_v2": [300, 0, 3000], "RelIso03": [100, 0, 0.5], "RelIso04": [100, 0, 0.5], "dR_lepClosestJet_30": [100, 0, 5], "dR_lepClosestJet_40": [100, 0, 5], "dR_lepClosestJet_50": [100, 0, 5], "NBTags_DeepFLV_30": [5, -0.5, 4.5], "NBTags_DeepFLV_40": [5, -0.5, 4.5], "NBTags_DeepFLV_50": [5, -0.5, 4.5], "WPt": [200, 0, 2000], "TranMom": [600, 0, 6000]}
+  variables = {"LepPt":  [100, 0, 1000], "MET": [100, 0, 1000], "METphi": [100, -5, 5], "LepEta": [120, -3, 3], "ST": [300, 0, 3000], "ST_v2": [300, 0, 3000], "MT": [200, 0, 200], "HT": [300, 0, 3000], "DPHI": [100, -5, 5], "DPHILepMet": [100, -5, 5], "DR": [100, 0, 5], "DR_LepleadJet": [100, 0, 5], "JetPt": [200, 0, 2000], "JetEta": [100, -5, 5], "NBTags_DeepCSV": [5, -0.5, 4.5], "NBTags_DeepFLV": [5, -0.5, 4.5], "NJets": [20, 0, 20], "NCentralJets": [20, 0, 20], "NFwdJets": [20, 0, 20], "DPHIMetJet": [100, -5, 5], "FwdJetEta": [100, -5, 5], "FwdJetPt": [100, 0, 1000], "Mass": [300, 0, 3000], "Mass_v2": [300, 0, 3000], "Mass1b": [300, 0, 3000], "Mass1b_v2": [300, 0, 3000], "Mass2b": [300, 0, 3000], "Mass2b_v2": [300, 0, 3000], "RelIso03": [100, 0, 0.5], "RelIso04": [100, 0, 0.5], "WPt": [200, 0, 2000], "TranMom": [600, 0, 6000]}
 
   variables_top = {"Pt_lmj_select": [100, 0, 1000], "Pt_lmj_select2": [100, 0, 1000], "Pt_lmj_select_alpha_up": [100, 0, 1000], "Pt_lmj_select_alpha_down": [100, 0, 1000], "Pt_lmj_select_beta_up": [100, 0, 1000], "Pt_lmj_select_beta_down": [100, 0, 1000], "Top_Score": [4, -0.5, 3.5], "Pt_lmj_select_beta_up2": [100, 0, 1000], "Pt_lmj_select_beta_down2": [100, 0, 1000], "ST_v2_def2": [300, 0, 3000], "ST_v2_beta_up2": [300, 0, 3000], "ST_v2_beta_down2": [300, 0, 3000]}
 
@@ -639,37 +639,23 @@ for i in  range(1):
     dR_lepClosestJet_v2 = 999
     lepton4vec = TLorentzVector()
     lepton4vec.SetPtEtaPhiM(entry.Lepton_pt, entry.Lepton_eta, entry.Lepton_phi, entry.Lepton_mass)
-    nBTag_30 = 0
-    nBTag_40 = 0
-    nBTag_50 = 0
+    HEMwt  = 1
+    FwdJet_Pt_L = -999
+    FwdJet_Pt_M = -999
+    FwdJet_Pt_T = -999
 
     for j in range(0, entry.nJet):
-       if (Jet_pt(file, entry, j, "nominal") > 30 and abs(entry.Jet_eta[j]) < 2.4 and JetID(entry.Jet_jetId[j]) >= 1 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Medium") >= 1): ##Changed
+       if (Jet_pt(file, entry, j, "nominal") > 30 and JetID(entry.Jet_jetId[j]) >= 1): ##Changed
          jet4vec = TLorentzVector()
          jet4vec.SetPtEtaPhiM(Jet_pt(file, entry, j, "nominal"), entry.Jet_eta[j], entry.Jet_phi[j], Jet_mass(file, entry, j, "nominal"))
-         if (jet4vec.DeltaR(Lep4vec) > 0.5 and abs(entry.Jet_eta[j]) < 2.4):
+         if (jet4vec.DeltaR(Lep4vec) > 0.5 and abs(entry.Jet_eta[j]) < 2.4 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Tight") >= 1):
            HT_Central += jet4vec.Pt()
            nCentralJets_v2 += 1
-         if (jet4vec.DeltaR(lepton4vec) < dR_lepClosestJet_v2 and Jet_pt(file, entry, j, "nominal") > 40): 
+           #Check HEM for all central jets
+           if (HEMwt == 1 and applyHEM(file, entry) == 0): HEMwt = 0
+
+         if (jet4vec.DeltaR(lepton4vec) < dR_lepClosestJet_v2 and Jet_pt(file, entry, j, "nominal") > 40 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Tight") >= 1 and abs(entry.Jet_eta[j]) < 2.4): 
            dR_lepClosestJet_v2 = jet4vec.DeltaR(lepton4vec)
-
-         if (useDeepCSV):
-           if (btagDeepCSV(entry.Jet_btagDeepB[j], "Medium") >= 1):
-             if (Jet_pt(file, entry, j, "nominal") > 30):
-               nBTag_30 += 1
-             if (Jet_pt(file, entry, j, "nominal") > 40):
-               nBTag_40 += 1
-             if (Jet_pt(file, entry, j, "nominal") > 50):
-               nBTag_50 += 1
-         else:
-           if (btagDeepFLV(entry.Jet_btagDeepFlavB[j], "Medium") >= 1):
-             if (Jet_pt(file, entry, j, "nominal") > 30):
-               nBTag_30 += 1
-             if (Jet_pt(file, entry, j, "nominal") > 40):
-               nBTag_40 += 1
-             if (Jet_pt(file, entry, j, "nominal") > 50):
-               nBTag_50 += 1
-
 
     btagSF_0tag = 1
     btagSF_1tag = 1
@@ -699,7 +685,7 @@ for i in  range(1):
     evtwt_LHEScaleUpWeight = 1
 
     #Apply HEM
-    evtwt  *= applyHEM(file, entry)
+    evtwt  *= HEMwt
 
     if (isMC(file)):
       random.seed(0)
@@ -712,39 +698,16 @@ for i in  range(1):
             
             ran = random.uniform(0, 1)
             if (useDeepCSV): 
-                #sf = reader.eval_auto_bounds(
-                #       'central',      # systematic (here also 'up'/'down' possible)
-                #       Jet_flavour(entry, j),              # jet flavor
-                #       abs(entry.Jet_eta[j]),            # absolute value of eta
-                #       Jet_pt(file, entry, j)             # pt
-                #     )
-                #btagSF.append(sf)
-                #nBTag += applyBTag (btagDeepCSV(entry.Jet_btagDeepB[j], "Medium"), entry.Jet_btagSF_deepcsv[j], Jet_bTagEff(entry, j), ran)
                 if (btagDeepCSV(entry.Jet_btagDeepB[j], "Medium") >= 1): 
-                  #btagSF_tree.append(entry.Jet_btagSF_deepcsv[j])
-                  #btagSF_evt *= sf
                   btagSF_evt_tree *= entry.Jet_btagSF_deepcsv[j]
                 else:
-                  #btagSF_evt *= (1 - min(1.0 , Jet_bTagEff(entry, j)*sf))/(1 - Jet_bTagEff(entry, j))
                   btagSF_evt_tree *= (1 - min(1.0 , Jet_bTagEff(entry, j)*entry.Jet_btagSF_deepcsv[j]))/(1 - Jet_bTagEff(entry, j))
             else: 
-                #nBTag  += applyBTag (btagDeepFLV(entry.Jet_btagDeepFlavB[j], "Medium"), entry.Jet_btagSF_deepjet[j], Jet_bTagEff(entry, j), ran)
-                #sf = reader.eval_auto_bounds(
-                #       'central',      # systematic (here also 'up'/'down' possible)
-                #       Jet_flavour(entry, j),              # jet flavor
-                #       abs(entry.Jet_eta[j]),            # absolute value of eta
-                #       Jet_pt(file, entry, j)             # pt
-                #     )
-                #btagSF.append(sf)
-                #print "BTagSF now : ", sf, " BTagSF from tree : ", entry.Jet_btagSF_deepjet[j]
                 if (btagDeepFLV(entry.Jet_btagDeepFlavB[j], "Medium") >= 1): 
-                  #btagSF_tree.append(entry.Jet_btagSF_deepjet[j])
-                  #btagSF_evt *= sf
                   btagSF_evt_tree *= entry.Jet_btagSF_deepjet[j]
                   btagSF_evt_treeUp *= entry.Jet_btagSF_deepjet_up[j]
                   btagSF_evt_treeDown *= entry.Jet_btagSF_deepjet_down[j]
                 else:
-                  #btagSF_evt *= (1 - min(1.0 , Jet_bTagEff(entry, j)*sf))/(1 - Jet_bTagEff(entry, j))
                   btagSF_evt_tree *= (1 - min(1.0 , Jet_bTagEff(entry, j)*entry.Jet_btagSF_deepjet[j]))/(1 - Jet_bTagEff(entry, j))
                   btagSF_evt_treeUp *= (1 - min(1.0 , Jet_bTagEff(entry, j)*entry.Jet_btagSF_deepjet_up[j]))/(1 - Jet_bTagEff(entry, j))
                   btagSF_evt_treeDown *= (1 - min(1.0 , Jet_bTagEff(entry, j)*entry.Jet_btagSF_deepjet_down[j]))/(1 - Jet_bTagEff(entry, j))
