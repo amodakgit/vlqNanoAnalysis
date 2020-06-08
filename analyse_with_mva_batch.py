@@ -179,9 +179,10 @@ def wpt_WJets_Scaling(file, tree):
   weight = 1.0
   if (isMC(file) and "WJets" in str(file)):
     wpt = tree.Lepton_pt + MET_pt(file, tree, "nominal")
-    weight = 1.152 - 0.000321*wpt
-  #return weight
-  return 1
+    #weight = 1.152 - 0.000321*wpt
+    weight = 1.184 - 0.000372*wpt
+  return weight
+  #return 1
 
 def tm_WJets_Scaling(file, tree, tm):
   weight = 1
@@ -194,9 +195,10 @@ def st_TTJets_Scaling(file, tree):
   weight = 1
   if (isMC(file) and ("TTJets" in str(file) or "TT_Tune" in str(file) or "TTTo" in  str(file))):
     st = tree.ST_v2
-    weight = 1.178 - 0.000298*st
-  #return weight
-  return 1
+    #weight = 1.178 - 0.000298*st
+    weight = 1.141 - 0.000231*st
+  return weight
+  #return 1
 
 def topPt_Reweighting(file, tree, alpha, beta):
     weight = 1
@@ -225,16 +227,19 @@ def W_GeneratorP4_weight(file, tree, alpha, beta):
           weight = alpha + beta*w_4vec.P()
     return weight
 
-def applyHEM(file, tree):
+def applyHEM(file, entry, j):
   flag = 1
   if (year == "2018"):
-    if ((entry.LeadJet_eta < -1.3 and entry.LeadJet_phi > -1.57 and entry.LeadJet_phi  < -0.87) or (entry.Lepton_eta < -1.3 and entry.Lepton_phi > -1.57 and entry.Lepton_phi  < -0.87)): foundLJ = 1
+    if ((entry.Jet_eta[j] < -1.3 and entry.Jet_phi[j] > -1.57 and entry.Jet_phi[j]  < -0.87) or (entry.Lepton_eta < -1.3 and entry.Lepton_phi > -1.57 and entry.Lepton_phi  < -0.87)): foundLJ = 1
     else: foundLJ = 0
     #Found Lepton or Jet in HEM 15/16
     if (foundLJ):
+      #print "Jet phi ", entry.Jet_phi[j], " Jet eta ", entry.Jet_eta[j], " Lep phi ", entry.Lepton_phi, " Lep eta", entry.Lepton_eta
       if (isMC(file)):
         #Affected lumi 39/60 = 0.65
-        if (random.uniform(0, 1) < 0.65):
+        ran_proportion = random.uniform(0, 1)
+        #print "ran_proportion", ran_proportion
+        if (ran_proportion < 0.65):
           flag = 0
       else:
         if ("SingleMuon_2018C" in str(file) or "SingleMuon_2018D" in str(file) or "EGamma_2018C" in str(file) or "EGamma_2018D" in str(file)):
@@ -505,8 +510,8 @@ for i in  range(1):
     sktree.Branch("LeadJet_eta", LeadJet_eta, 'LeadJet_eta/F')
     sktree.Branch("LeadJet_phi", LeadJet_phi, 'LeadJet_phi/F')
     sktree.Branch("LeadJet_mass", LeadJet_mass, 'LeadJet_mass/F')
-    sktree.Branch("LeadJet_btagDeepCSV", LeadJet_btagDeepCSV, 'LeadJet_btag/F')
-    sktree.Branch("LeadJet_btagDeepFLV", LeadJet_btagDeepFLV, 'LeadJet_btag/F')
+    sktree.Branch("LeadJet_btagDeepCSV", LeadJet_btagDeepCSV, 'LeadJet_btagDeepCSV/F')
+    sktree.Branch("LeadJet_btagDeepFLV", LeadJet_btagDeepFLV, 'LeadJet_btagDeepFLV/F')
     sktree.Branch("LeadJet_btag", LeadJet_btag, 'LeadJet_btag/F')
     sktree.Branch("MET", MET, 'MET/F')
     sktree.Branch("MT", MT, 'MT/F')
@@ -658,7 +663,7 @@ for i in  range(1):
            HT_Central += jet4vec.Pt()
            nCentralJets_v2 += 1
            #Check HEM for all central jets
-           if (HEMwt == 1 and applyHEM(file, entry) == 0): HEMwt = 0
+           if (HEMwt == 1 and applyHEM(file, entry, j) == 0): HEMwt = 0
 
          if (jet4vec.DeltaR(lepton4vec) < dR_lepClosestJet_v2 and Jet_pt(file, entry, j, "nominal") > 40 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Tight") >= 1 and abs(entry.Jet_eta[j]) < 2.4): 
            dR_lepClosestJet_v2 = jet4vec.DeltaR(lepton4vec)
@@ -704,7 +709,7 @@ for i in  range(1):
     evtwt  *= HEMwt
 
     if (isMC(file)):
-      random.seed(0)
+      #random.seed(0)
       #nBTag  = 0
       for j in range(0, entry.nJet):
          if (Jet_pt(file, entry, j, "nominal") > 50 and abs(entry.Jet_eta[j]) < 2.4 and JetID(entry.Jet_jetId[j]) >= 1):  ##Changed
@@ -712,7 +717,7 @@ for i in  range(1):
           jet4vec.SetPtEtaPhiM(Jet_pt(file, entry, j, "nominal"), entry.Jet_eta[j], entry.Jet_phi[j], Jet_mass(file, entry, j, "nominal"))
           if (jet4vec.DeltaR(Lep4vec) > 0.5):
             
-            ran = random.uniform(0, 1)
+            #ran = random.uniform(0, 1)
             if (useDeepCSV): 
                 if (btagDeepCSV(entry.Jet_btagDeepB[j], "Medium") >= 1): 
                   btagSF_evt_tree *= entry.Jet_btagSF_deepcsv[j]
@@ -938,6 +943,7 @@ for i in  range(1):
           LeadJet_btagDeepCSV[0] = entry.LeadJet_btag_DeepCSV
           LeadJet_btagDeepFLV[0] = entry.LeadJet_btag_DeepFLV
           LeadJet_btag[0] = leadjetBTag
+          print leadjetBTag
           MET[0] = MET_pt(file, entry, "nominal")
           MT[0] = MassT
           HT[0] = HT_Central
