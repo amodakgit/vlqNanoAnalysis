@@ -35,7 +35,7 @@ applyTopPtRew =  False
 useDeepCSV = False
 #sfFilePath  = "root://cmsxrootd.fnal.gov//store/user/amodak//store/user/amodak/toConndor"
 doSys = True
-doSkim = False
+doSkim = True
 
 def Jet_pt(fname, tree, idx, type):
     if ('SingleMuon' in str(fname) or 'SingleElectron' in str(fname) or 'EGamma' in str(fname)):
@@ -685,10 +685,10 @@ for i in  range(1):
          if (abs(entry.Jet_eta[j]) > abs(fwdJeteta_L)  and  abs(entry.Jet_eta[j]) > 2.4 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Loose") >= 1):
            fwdJeteta_L = entry.Jet_eta[j]
            FwdJetPt_L = Jet_pt(file, entry, j, "nominal")
-         if (abs(entry.Jet_eta[j]) > abs(fwdJeteta_L)  and  abs(entry.Jet_eta[j]) > 2.4 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Medium") >= 1):
+         if (abs(entry.Jet_eta[j]) > abs(fwdJeteta_M)  and  abs(entry.Jet_eta[j]) > 2.4 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Medium") >= 1):
            fwdJeteta_M = entry.Jet_eta[j]
            FwdJetPt_M = Jet_pt(file, entry, j, "nominal")
-         if (abs(entry.Jet_eta[j]) > abs(fwdJeteta_L)  and  abs(entry.Jet_eta[j]) > 2.4 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Tight") >= 1):
+         if (abs(entry.Jet_eta[j]) > abs(fwdJeteta_T)  and  abs(entry.Jet_eta[j]) > 2.4 and JetPUID(entry.Jet_puId[j], Jet_pt(file, entry, j, "nominal"), "Tight") >= 1):
            fwdJeteta_T = entry.Jet_eta[j]
            FwdJetPt_T = Jet_pt(file, entry, j, "nominal")
 
@@ -724,12 +724,12 @@ for i in  range(1):
       Lep_eta_phi_2D.Fill(entry.Lepton_eta, entry.Lepton_phi, evtwt)
 
     #Apply HEM
-    #if (isMC(file) and year == "2018" and HEMwt == 0):
+    if (isMC(file) and year == "2018" and HEMwt == 0):
       #ran_proportion = random.uniform(0, 1)
       #print "ran_proportion", ran_proportion                                                                                               
       #if (ran_proportion > 0.65): HEMwt = 1
-      #HEMwt = 0.35
-    #evtwt  *= HEMwt
+      HEMwt = 0.35
+    evtwt  *= HEMwt
 
     if (isMC(file)):
       #random.seed(0)
@@ -966,7 +966,6 @@ for i in  range(1):
           LeadJet_btagDeepCSV[0] = entry.LeadJet_btag_DeepCSV
           LeadJet_btagDeepFLV[0] = entry.LeadJet_btag_DeepFLV
           LeadJet_btag[0] = leadjetBTag
-          print leadjetBTag
           MET[0] = MET_pt(file, entry, "nominal")
           MT[0] = MassT
           HT[0] = HT_Central
