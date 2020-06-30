@@ -35,7 +35,7 @@ applyTopPtRew =  False
 useDeepCSV = False
 #sfFilePath  = "root://cmsxrootd.fnal.gov//store/user/amodak//store/user/amodak/toConndor"
 doSys = True
-doSkim = True
+doSkim = False
 
 def Jet_pt(fname, tree, idx, type):
     if ('SingleMuon' in str(fname) or 'SingleElectron' in str(fname) or 'EGamma' in str(fname)):
@@ -307,7 +307,7 @@ def applyHighPtMuonSF (file, entry, pt, eta):
     sf = float(data_eff/mc_eff)
     return sf
 
-def cutFlow(file, entry, crType, leadjetBTag, HT_Central, nBTag, MassT, MET_pt, LeadJet_pt):
+def cutFlow(file, entry, crType, leadjetBTag, HT_Central, nBTag, MassT, MET_pt, LeadJet_pt, dR_lepClosestJet_v2):
   if (crType == "WJets"):
     if not (entry.Lepton_pt > 40 and abs(entry.Lepton_eta) < 2.1): return 1
     if not (MET_pt > 60): return 2
@@ -333,7 +333,8 @@ def cutFlow(file, entry, crType, leadjetBTag, HT_Central, nBTag, MassT, MET_pt, 
     if not (LeadJet_pt > 200 and abs(entry.LeadJet_eta) < 2.4): return 4
     if not (leadjetBTag >= 1): return 5
     if not (entry.DR_LepleadJet > 0.5): return 6
-    if not (entry.DR_LepClosestJet > 1.5): return 7
+    #if not (entry.DR_LepClosestJet > 1.5): return 7
+    if not (dR_lepClosestJet_v2 > 1.5): return 7
     if not (MassT > 40): return 8
     if not (nBTag >= 1): return 9
     if not (entry.ST_v2 > 700): return 10
@@ -351,7 +352,8 @@ def cutFlow(file, entry, crType, leadjetBTag, HT_Central, nBTag, MassT, MET_pt, 
     if not (LeadJet_pt > 200 and abs(entry.LeadJet_eta) < 2.4): return 4
     if not (leadjetBTag >= 1): return 5
     if not (entry.DR_LepleadJet > -1): return 6
-    if not (entry.DR_LepClosestJet > 0.5 and entry.DR_LepClosestJet < 1.5): return 7
+    #if not (entry.DR_LepClosestJet > 0.5 and entry.DR_LepClosestJet < 1.5): return 7
+    if not (dR_lepClosestJet_v2 > 0.5 and dR_lepClosestJet_v2 < 1.5): return 7
     if not (MassT > 0): return 8
     if not (nBTag >= 2): return 9
     if not (entry.ST_v2 > 300): return 10
@@ -411,7 +413,7 @@ def cutFlow(file, entry, crType, leadjetBTag, HT_Central, nBTag, MassT, MET_pt, 
     if not (nBTag >= 1): return 9
     if not (entry.ST_v2 > 500): return 10
     if not (HT_Central > 500): return 11
-    if not (abs(entry.DPHI_LepMet) < 999): return 12
+    if not (abs(entry.DPHI_LepMet) < 0.5): return 12
     if not (abs(entry.DPHI_LepleadJet) > 2.0): return 13
     if not (entry.bVsW_ratio < 999): return 14
     if not ((entry.nVetoMuons + entry.nVetoElectrons) == 1): return 15
@@ -899,7 +901,7 @@ for i in  range(1):
 
     #WJets Selection
     #if (MET_Filters(file, entry) >= 1 and entry.Lepton_pt > 40 and abs(entry.Lepton_eta) < 2.1 and entry.LeadJet_pt > 200 and abs(entry.LeadJet_eta) < 2.4 and entry.DR_LepleadJet > 0.5 and nBTag == 0 and MET_pt(file, entry) > 60 and entry.ST_v2 > 500 and  HT_Central > 400 and MassT > 40 and abs(entry.DPHI_LepMet) < 0.5 and abs(entry.DPHI_LepleadJet) > 2.0 and (entry.nVetoMuons + entry.nVetoElectrons) == 1):
-    cut = cutFlow(file, entry, "WJets", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt))
+    cut = cutFlow(file, entry, "WJets", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt), dR_lepClosestJet_v2)
     for itr in range (0, int(cut)):
       if (float(entry.Event_flag) == 13 and float(entry.MuonTrigFlag) >= 1):
         hmap["Mu_WJets_Counter"].Fill(itr, evtwt_nominal)
@@ -960,7 +962,7 @@ for i in  range(1):
                 elif (Jet_flavour(entry, j) == 1): effmap_pt_eta_c_btagged.Fill(Jet_pt(file, entry, j, "nominal"), entry.Jet_eta[j]) 
                 elif (Jet_flavour(entry, j) == 2): effmap_pt_eta_l_btagged.Fill(Jet_pt(file, entry, j, "nominal"), entry.Jet_eta[j]) 
 
-    cut = cutFlow(file, entry, "PreSig", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt))
+    cut = cutFlow(file, entry, "PreSig", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt), dR_lepClosestJet_v2)
     for itr in range (0, int(cut)):
       if (float(entry.Event_flag) == 13 and float(entry.MuonTrigFlag) >= 1):
         hmap["Mu_PreSig_Counter"].Fill(itr, evtwt_nominal)
@@ -1097,7 +1099,7 @@ for i in  range(1):
       if ((entry.MuonTrigFlag >= 1 or entry.EleTrigFlag >= 1) and itr == 4 and doSkim): sktree.Fill()
 
     #PreSigV2: dphi_lepton_leadJet applied
-    cut = cutFlow(file, entry, "PreSigV2", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt))
+    cut = cutFlow(file, entry, "PreSigV2", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt), dR_lepClosestJet_v2)
     for itr in range (0, int(cut)):
       if (float(entry.Event_flag) == 13 and float(entry.MuonTrigFlag) >= 1):
         if (itr == 16):
@@ -1109,7 +1111,7 @@ for i in  range(1):
     #Signal Selection
     #if (MET_Filters(file, entry) >= 1 and entry.Lepton_pt > 40 and abs(entry.Lepton_eta) < 2.1 and entry.LeadJet_pt > 200 and abs(entry.LeadJet_eta) < 2.4 and entry.DR_LepleadJet > 0.5 and entry.DR_LepClosestJet > 1.5 and abs(entry.DPHI_LepMet) < 0.5 and entry.bVsW_ratio < 1.4 and abs(entry.DPHI_LepleadJet) > 2.0 and nBTag_30 >= 1 and MET_pt(file, entry) > 60 and entry.ST_v2 > 700 and  HT_Central > 500 and MassT < 130 and leadjetBTag >= 1 and (entry.nVetoMuons + entry.nVetoElectrons) == 1 and entry.FwdJetPt > 30 and abs(entry.FwdJetEta) > 2.4):
 
-    cut = cutFlow(file, entry, "Signal", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt))
+    cut = cutFlow(file, entry, "Signal", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt), dR_lepClosestJet_v2)
     for itr in range (0, int(cut)):
       if (float(entry.Event_flag) == 13 and float(entry.MuonTrigFlag) >= 1):
         hmap["Mu_Signal_Counter"].Fill(itr, evtwt_nominal)
@@ -1161,7 +1163,7 @@ for i in  range(1):
       evtwt_beta_down2 = evtwt*float(entry.genWeight)*float(entry.puWeight)*float(btagSF_evt_tree)*topptweight_beta_down2
       evtwt_TTJets_ST_Scaling = evtwt*float(entry.genWeight)*float(entry.puWeight)*float(btagSF_evt_tree)*st_TTJets_Scaling(file, entry)
 
-    cut = cutFlow(file, entry, "TTJets", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt))
+    cut = cutFlow(file, entry, "TTJets", leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "nominal"), float(entry.LeadJet_pt), dR_lepClosestJet_v2)
     for itr in range (0, int(cut)):
       if (itr == 16):
         met4vec = ROOT.TLorentzVector()
@@ -1289,10 +1291,10 @@ for i in  range(1):
     #Systematics for JES and JER
     if (doSys):
       for cr in range(len(controlR)):
-        cutjerUp = cutFlow(file, entry, str(controlR[cr]), leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "jerUp"), Jet_pt(file, entry, entry.LeadJet_idx, "jerUp"))
-        cutjerDown = cutFlow(file, entry, str(controlR[cr]), leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "jerDown"), Jet_pt(file, entry, entry.LeadJet_idx, "jerDown"))
-        cutjesUp = cutFlow(file, entry, str(controlR[cr]), leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "jesUp"), Jet_pt(file, entry, entry.LeadJet_idx, "jesUp"))
-        cutjesDown = cutFlow(file, entry, str(controlR[cr]), leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "jesDown"), Jet_pt(file, entry, entry.LeadJet_idx, "jesDown"))
+        cutjerUp = cutFlow(file, entry, str(controlR[cr]), leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "jerUp"), Jet_pt(file, entry, entry.LeadJet_idx, "jerUp"), dR_lepClosestJet_v2)
+        cutjerDown = cutFlow(file, entry, str(controlR[cr]), leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "jerDown"), Jet_pt(file, entry, entry.LeadJet_idx, "jerDown"), dR_lepClosestJet_v2)
+        cutjesUp = cutFlow(file, entry, str(controlR[cr]), leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "jesUp"), Jet_pt(file, entry, entry.LeadJet_idx, "jesUp"), dR_lepClosestJet_v2)
+        cutjesDown = cutFlow(file, entry, str(controlR[cr]), leadjetBTag, HT_Central, nBTag, MassT, MET_pt(file, entry, "jesDown"), Jet_pt(file, entry, entry.LeadJet_idx, "jesDown"), dR_lepClosestJet_v2)
         CHL = ""
         if (float(entry.Event_flag) == 13 and float(entry.MuonTrigFlag) >= 1):
           CHL = "Mu"
