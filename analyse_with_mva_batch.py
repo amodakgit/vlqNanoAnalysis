@@ -450,7 +450,7 @@ def cutFlow(file, entry, crType, leadjetBTag, HT_Central, nBTag, MassT, HT_Full_
     if not (entry.event_FwdJetPt > 30 and abs(entry.event_FwdJetEta) > 2.4 and bdtOutput > 0.14): return 16
     return 17
 
-def fillHisto(cntR, channeL, file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt, MET_phi, LeadJet_pt, sys, evtwt):
+def fillHisto(cntR, channeL, file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt, MET_phi, LeadJet_pt, sys, evtwt):
     iso03  = 999
     iso04  = 999
     if (channeL == "Mu"):
@@ -506,9 +506,17 @@ def fillHisto(cntR, channeL, file, entry, itr, nBTag, MassT, HT_Central, bdtOutp
     hmap[str(channeL)+"_"+str(cntR)+"_RelIso03_"+str(sys)+"_"+str(itr)].Fill(iso03, evtwt)
     hmap[str(channeL)+"_"+str(cntR)+"_RelIso04_"+str(sys)+"_"+str(itr)].Fill(iso04, evtwt)
     hmap[str(channeL)+"_"+str(cntR)+"_BDTOutput_"+str(sys)+"_"+str(itr)].Fill(bdtOutput, evtwt)
+    hmap[str(channeL)+"_"+str(cntR)+"_nPVGood_"+str(sys)+"_"+str(itr)].Fill(entry.PV_npvsGood, evtwt)
     if (nBTag == 1):
        hmap[str(channeL)+"_"+str(cntR)+"_Mass1b_"+str(sys)+"_"+str(itr)].Fill(entry.event_Mass, evtwt)
        hmap[str(channeL)+"_"+str(cntR)+"_Mass1b_v2_"+str(sys)+"_"+str(itr)].Fill(entry.event_Mass_v2, evtwt)
+       if (leadjetBTagTig >= 1): 
+         hmap[str(channeL)+"_"+str(cntR)+"_MassTight1b_"+str(sys)+"_"+str(itr)].Fill(entry.event_Mass, evtwt)
+         hmap[str(channeL)+"_"+str(cntR)+"_MassTight1b_v2_"+str(sys)+"_"+str(itr)].Fill(entry.event_Mass_v2, evtwt)
+       else: 
+         hmap[str(channeL)+"_"+str(cntR)+"_MassMedium1b_"+str(sys)+"_"+str(itr)].Fill(entry.event_Mass, evtwt)
+         hmap[str(channeL)+"_"+str(cntR)+"_MassMedium1b_v2_"+str(sys)+"_"+str(itr)].Fill(entry.event_Mass_v2, evtwt)
+
     elif (nBTag > 1):
        hmap[str(channeL)+"_"+str(cntR)+"_Mass2b_"+str(sys)+"_"+str(itr)].Fill(entry.event_Mass, evtwt)
        hmap[str(channeL)+"_"+str(cntR)+"_Mass2b_v2_"+str(sys)+"_"+str(itr)].Fill(entry.event_Mass_v2, evtwt)
@@ -682,7 +690,7 @@ for i in  range(1):
   channels = ["Mu", "Ele"]
   controlR = ["WJets", "TTJets", "Signal", "PreSig", "SignalBDT"]
   #controlR = ["wjet", "ttjet", "signal", "presig", "multijet"]
-  variables = {"LepPt":  [100, 0, 1000], "LepPhi":  [100, -5, 5], "LepPhi_HEMf":  [100, -5, 5], "LepPhi_HEMp":  [100, -5, 5], "MET": [100, 0, 1000], "METphi": [100, -5, 5], "LepEta": [120, -3, 3], "LepEta_HEMf": [120, -3, 3], "LepEta_HEMp": [120, -3, 3], "ST": [300, 0, 3000], "ST_v2": [300, 0, 3000], "MT": [200, 0, 200], "HT": [300, 0, 3000], "DPHI": [100, -5, 5], "DPHILepMet": [100, -5, 5], "DRpu":  [100, 0, 5], "DR": [100, 0, 5], "DR_LepleadJet": [100, 0, 5], "JetPt": [200, 0, 2000], "JetPhi": [100, -5, 5], "JetEta": [100, -5, 5], "JetPhi_HEMp": [100, -5, 5], "JetEta_HEMp": [100, -5, 5], "JetPhi_HEMf": [100, -5, 5], "JetEta_HEMf": [100, -5, 5], "NBTags_DeepCSV": [5, -0.5, 4.5], "NBTags_DeepFLV": [5, -0.5, 4.5], "NJets": [20, 0, 20], "NCentralJets": [20, 0, 20], "NFwdJets": [20, 0, 20], "DPHIMetJet": [100, -5, 5], "FwdJetEta": [100, -5, 5], "FwdJetPt": [500, 0, 500], "Mass": [300, 0, 3000], "Mass_v2": [300, 0, 3000], "Mass1b": [300, 0, 3000], "Mass1b_v2": [300, 0, 3000], "Mass2b": [300, 0, 3000], "Mass2b_v2": [300, 0, 3000], "RelIso03": [100, 0, 0.5], "RelIso04": [100, 0, 0.5], "WPt": [200, 0, 2000], "TranMom": [600, 0, 6000], "FwdJetPt_L": [500, 0, 500], "FwdJetPt_M": [500, 0, 500], "FwdJetPt_T": [500, 0, 500], "bVsW_ratio": [100, 0, 10], "BDTOutput": [100, -1, 1]}
+  variables = {"LepPt":  [100, 0, 1000], "LepPhi":  [100, -5, 5], "LepPhi_HEMf":  [100, -5, 5], "LepPhi_HEMp":  [100, -5, 5], "MET": [100, 0, 1000], "METphi": [100, -5, 5], "LepEta": [120, -3, 3], "LepEta_HEMf": [120, -3, 3], "LepEta_HEMp": [120, -3, 3], "ST": [300, 0, 3000], "ST_v2": [300, 0, 3000], "MT": [200, 0, 200], "HT": [300, 0, 3000], "DPHI": [100, -5, 5], "DPHILepMet": [100, -5, 5], "DRpu":  [100, 0, 5], "DR": [100, 0, 5], "DR_LepleadJet": [100, 0, 5], "JetPt": [200, 0, 2000], "JetPhi": [100, -5, 5], "JetEta": [100, -5, 5], "JetPhi_HEMp": [100, -5, 5], "JetEta_HEMp": [100, -5, 5], "JetPhi_HEMf": [100, -5, 5], "JetEta_HEMf": [100, -5, 5], "NBTags_DeepCSV": [5, -0.5, 4.5], "NBTags_DeepFLV": [5, -0.5, 4.5], "NJets": [20, 0, 20], "NCentralJets": [20, 0, 20], "NFwdJets": [20, 0, 20], "DPHIMetJet": [100, -5, 5], "FwdJetEta": [100, -5, 5], "FwdJetPt": [500, 0, 500], "Mass": [300, 0, 3000], "Mass_v2": [300, 0, 3000], "Mass1b": [300, 0, 3000], "Mass1b_v2": [300, 0, 3000], "MassTight1b": [300, 0, 3000], "MassMedium1b": [300, 0, 3000], "MassTight1b_v2": [300, 0, 3000], "MassMedium1b_v2": [300, 0, 3000], "Mass2b": [300, 0, 3000], "Mass2b_v2": [300, 0, 3000], "RelIso03": [100, 0, 0.5], "RelIso04": [100, 0, 0.5], "WPt": [200, 0, 2000], "TranMom": [600, 0, 6000], "FwdJetPt_L": [500, 0, 500], "FwdJetPt_M": [500, 0, 500], "FwdJetPt_T": [500, 0, 500], "bVsW_ratio": [100, 0, 10], "BDTOutput": [100, -1, 1], "nPVGood": [100, 0, 100]}
 
   variables_top = {"Pt_lmj_select": [100, 0, 1000], "Pt_lmj_select2": [100, 0, 1000], "Pt_lmj_select_alpha_up": [100, 0, 1000], "Pt_lmj_select_alpha_down": [100, 0, 1000], "Pt_lmj_select_beta_up": [100, 0, 1000], "Pt_lmj_select_beta_down": [100, 0, 1000], "Top_Score": [4, -0.5, 3.5], "Pt_lmj_select_beta_up2": [100, 0, 1000], "Pt_lmj_select_beta_down2": [100, 0, 1000], "ST_v2_def2": [300, 0, 3000], "ST_v2_beta_up2": [300, 0, 3000], "ST_v2_beta_down2": [300, 0, 3000]}
 
@@ -690,7 +698,7 @@ for i in  range(1):
   levels = [16]
   systematicS = ["nominal"]
   if (doSys):
-    systematicS = ["nominal", "PileupUp", "PileupDown", "BTaghfSFUp", "BTaghfSFDown", "BTaglfSFUp", "BTaglfSFDown", "topptweightUp", "topptweightDown", "jerUp", "jerDown", "jesUp", "jesDown", "LHEScale1", "LHEScale2", "LHEScale3", "LHEScale4", "LHEScale6", "LHEScale8", "LHEScaleUpWeight", "LHEScaleDownWeight", "LHEPDFUpWeight", "LHEPDFDownWeight","TTJets_ST_ScalingUp", "TTJets_ST_ScalingDown"]
+    systematicS = ["nominal", "PileupUp", "PileupDown", "BTaghfSFUp", "BTaghfSFDown", "BTaglfSFUp", "BTaglfSFDown", "topptweightUp", "topptweightDown", "jerUp", "jerDown", "jesUp", "jesDown", "LHEScale1", "LHEScale2", "LHEScale3", "LHEScale4", "LHEScale6", "LHEScale8", "LHEScaleUpWeight", "LHEScaleDownWeight", "LHEPdfUpWeight", "LHEPdfDownWeight","TTJets_ST_ScalingUp", "TTJets_ST_ScalingDown", "NoPileup"]
     
   for ch in range(len(channels)):
     for cr in range(len(controlR)):
@@ -882,6 +890,7 @@ for i in  range(1):
     #Event weights initialized
     evtwt = 1
     evtwt_nominal = 1
+    evtwt_nominal_nopu = 1
     evtwt_nominalv2 = 1
     evtwt_PileupUp = 1
     evtwt_PileupDown = 1
@@ -900,7 +909,9 @@ for i in  range(1):
     evtwt_LHEScaleDownWeight  = 1
     evtwt_LHEScaleUpWeight = 1
     evtwt_LHEPdfDownWeight  = 1
-    evtwt_LHEpdfUpWeight = 1
+    evtwt_LHEPdfUpWeight = 1
+    evtwt_TTJets_ST_ScalingUp = 1
+    evtwt_TTJets_ST_ScalingDown = 1
 
     if (HEMwt == 0): 
       Jet_eta_phi_2D.Fill(entry.event_LeadJet_eta, entry.event_LeadJet_phi, evtwt)
@@ -917,6 +928,7 @@ for i in  range(1):
     #Event weights: this makes sure evtwt is getting applied on data as well, needed for HEM
     if not (isMC(file)):
      evtwt_nominal *= evtwt
+     evtwt_nominal_nopu *= evtwt
      evtwt_nominalv2 *= evtwt
      evtwt_PileupUp *= evtwt
      evtwt_PileupDown *= evtwt
@@ -930,7 +942,9 @@ for i in  range(1):
      evtwt_LHEScaleDownWeight *= evtwt
      evtwt_LHEPdfUpWeight *= evtwt
      evtwt_LHEPdfDownWeight *= evtwt
- 
+     evtwt_TTJets_ST_ScalingUp *=evtwt
+     evtwt_TTJets_ST_ScalingDown *=evtwt
+
     if (isMC(file)):
       #random.seed(0)
       #nBTag  = 0
@@ -974,6 +988,9 @@ for i in  range(1):
       LHEScaleDownWeight  = 1
       LHEPdfUpWeight  = 1
       LHEPdfDownWeight  = 1
+      TTJets_ST_ScalingUp = 1
+      TTJets_ST_ScalingDown = st_TTJets_Scaling(file, entry)*st_TTJets_Scaling(file, entry)
+
       if (doSys):
         #Scale
         lhe = []
@@ -991,13 +1008,13 @@ for i in  range(1):
         #PDF
         if (hasattr(entry, 'nLHEPdfWeight') and hasattr(entry, 'LHEPdfWeight') and entry.nLHEPdfWeight > 0):
           PDFWeightPlus, PDFWeightMinus = 0, 0
-          print entry.nLHEPdfWeight, entry.LHEPdfWeight[0]
+          #print entry.nLHEPdfWeight, entry.LHEPdfWeight[0]
           for nPdf in range((entry.nLHEPdfWeight -1)/2):
             PDFWeightPlus += max ((entry.LHEPdfWeight[2*nPdf+2] - entry.LHEPdfWeight[0]), (entry.LHEPdfWeight[2*nPdf+1] - entry.LHEPdfWeight[0]), 0)**2
             PDFWeightMinus += max ((entry.LHEPdfWeight[0] - entry.LHEPdfWeight[2*nPdf+2]), (entry.LHEPdfWeight[0] - entry.LHEPdfWeight[2*nPdf+1]), 0)**2
           LHEPDFUpWeight = entry.LHEPdfWeight[0] + math.sqrt(PDFWeightPlus)
           LHEPDFDownWeight = entry.LHEPdfWeight[0] - math.sqrt(PDFWeightMinus)
-          print "LHEPDFUpWeight, LHEPDFDownWeight", LHEPDFUpWeight, LHEPDFDownWeight
+          #print "LHEPDFUpWeight, LHEPDFDownWeight", LHEPDFUpWeight, LHEPDFDownWeight
 
 
       if (year  == "2016"):
@@ -1075,6 +1092,7 @@ for i in  range(1):
 
       #evtwt_nominal = evtwt*float(entry.genWeight)*float(entry.puWeight)*float(btagSF_evt_tree)*float(topptweight)*tm_WJets_Scaling(file, tree, (entry.ST_v2+HT_Central-entry.LeadJet_pt))
       evtwt_nominal = evtwt*float(entry.genWeight)*float(entry.puWeight)*float(btagSF_evt_tree)*float(topptweight)*float(wpt_WJets_Scaling(file, entry))*st_TTJets_Scaling(file, entry)
+      evtwt_nominal_nopu = evtwt*float(entry.genWeight)*float(btagSF_evt_tree)*float(topptweight)*float(wpt_WJets_Scaling(file, entry))*st_TTJets_Scaling(file, entry)
       evtwt_nominalv2 = evtwt*float(entry.puWeight)*float(btagSF_evt_tree)*float(topptweight)*float(wpt_WJets_Scaling(file, entry))*st_TTJets_Scaling(file, entry)
       if (doSys):
         evtwt_PileupUp = evtwt*float(entry.genWeight)*float(entry.puWeightUp)*float(btagSF_evt_tree)*float(topptweight)*float(wpt_WJets_Scaling(file, entry))*st_TTJets_Scaling(file, entry)
@@ -1087,6 +1105,11 @@ for i in  range(1):
         evtwt_topptweightDown = evtwt*float(entry.genWeight)*float(entry.puWeight)*float(btagSF_evt_tree)*float(topptweightDown)*float(wpt_WJets_Scaling(file, entry))*st_TTJets_Scaling(file, entry)
         evtwt_LHEScaleDownWeight =  evtwt_nominal*LHEScaleDownWeight
         evtwt_LHEScaleUpWeight =  evtwt_nominal*LHEScaleUpWeight
+        evtwt_LHEPdfDownWeight =  evtwt_nominal*LHEPdfDownWeight
+        evtwt_LHEPdfUpWeight =  evtwt_nominal*LHEPdfUpWeight
+        evtwt_TTJets_ST_ScalingUp = evtwt*float(entry.genWeight)*float(entry.puWeight)*float(btagSF_evt_tree)*float(topptweight)*float(wpt_WJets_Scaling(file, entry))*TTJets_ST_ScalingUp
+        evtwt_TTJets_ST_ScalingDown = evtwt*float(entry.genWeight)*float(entry.puWeight)*float(btagSF_evt_tree)*float(topptweight)*float(wpt_WJets_Scaling(file, entry))*TTJets_ST_ScalingDown
+        
         if (hasattr(entry, 'LHEScaleWeight')  and entry.nLHEScaleWeight): 
           evtwt_lhescale1 =  evtwt_nominal*entry.LHEScaleWeight[1]  
           evtwt_lhescale2 =  evtwt_nominal*entry.LHEScaleWeight[2]  
@@ -1119,27 +1142,38 @@ for i in  range(1):
     for cr in range(len(controlR)):
       cut = cutFlow(file, entry, str(controlR[cr]), leadjetBTag, HT_Central, nBTag, MassT, HT_Full_pu_var, reader, MET_pt(file, entry, "nominal"), float(entry.event_LeadJet_pt), dR_lepClosestJet_v2, nVeto)
       for itr in range (0, int(cut)):
-        if (float(entry.event_Event_flag) == 13 and float(entry.event_MuonTrigFlag) >= 1):
-          hmap["Mu_"+str(controlR[cr])+"_Counter"].Fill(itr, evtwt_nominal)
+          ch = ""
+          if (float(entry.event_Event_flag) == 13 and float(entry.event_MuonTrigFlag) >= 1):
+            ch = "Mu"
+          elif (entry.event_Event_flag == 11 and entry.event_EleTrigFlag >= 1):
+            ch = "Ele"
+          else:
+            continue
+          hmap[str(ch)+"_"+str(controlR[cr])+"_Counter"].Fill(itr, evtwt_nominal)
           if (itr == 16):
-            fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "nominal", evtwt_nominal)
+            fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "nominal", evtwt_nominal)
             if (doSys):
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,"topptweightUp", evtwt_topptweightUp)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,"topptweightDown", evtwt_topptweightDown)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt, "BTaghfSFUp", evtwt_BTaghfSFUp)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt, "BTaghfSFDown", evtwt_BTaghfSFDown)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt, "BTaglfSFUp", evtwt_BTaglfSFUp)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt, "BTaglfSFDown", evtwt_BTaglfSFDown)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "PileupUp", evtwt_PileupUp)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "PileupDown", evtwt_PileupDown)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
-              fillHisto(str(controlR[cr]), "Mu", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "NoPileup", evtwt_nominal_nopu)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,"topptweightUp", evtwt_topptweightUp)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,"topptweightDown", evtwt_topptweightDown)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt, "BTaghfSFUp", evtwt_BTaghfSFUp)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt, "BTaghfSFDown", evtwt_BTaghfSFDown)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt, "BTaglfSFUp", evtwt_BTaglfSFUp)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt, "BTaglfSFDown", evtwt_BTaglfSFDown)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "PileupUp", evtwt_PileupUp)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "PileupDown", evtwt_PileupDown)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEPdfDownWeight", evtwt_LHEPdfDownWeight)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEPdfUpWeight", evtwt_LHEPdfUpWeight)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "TTJets_ST_ScalingUp", evtwt_TTJets_ST_ScalingUp)
+              fillHisto(str(controlR[cr]), str(ch), file, entry, itr, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "TTJets_ST_ScalingDown", evtwt_TTJets_ST_ScalingDown)
 
 
           if (itr == 4 and doSkim and "PreSig" in str(controlR[cr])):
@@ -1202,7 +1236,8 @@ for i in  range(1):
             Mjj_leadJet_CloJet[0] = (leadJet_4vec + lepClosestJet_v2_4vec).M()
             DR_leadJet_CloJet[0] = leadJet_4vec.DeltaR(lepClosestJet_v2_4vec)
             LeadJet_btagTight[0] = leadjetBTagTig
-            Lepton_charge[0] = entry.Muon_charge[entry.event_Lepton_idx]
+            if ("Mu" in str(ch)): Lepton_charge[0] = entry.Muon_charge[entry.event_Lepton_idx]
+            elif ("Ele" in str(ch)): Lepton_charge[0] = entry.Electron_charge[entry.event_Lepton_idx]
             Mjj_leaddJet_fwdJet_puT[0] = (leadJet_4vec + fwdJet_T_4vec).M()
             DR_leaddJet_fwdJet_puT[0] = leadJet_4vec.DeltaR(fwdJet_T_4vec)
             DR_Lep_fwdJet_puT[0] = Lep4vec.DeltaR(fwdJet_T_4vec)
@@ -1211,99 +1246,8 @@ for i in  range(1):
             Mt_JS[0] = Mt_js
             Mw_JS[0] = Mw_js
 
-        elif (entry.event_Event_flag == 11 and entry.event_EleTrigFlag >= 1):
-          hmap["Ele_"+str(controlR[cr])+"_Counter"].Fill(itr, evtwt_nominal)
-          if (itr == 16):
-            fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "nominal", evtwt_nominal)
-            if (doSys):
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "topptweightUp", evtwt_topptweightUp)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "topptweightDown", evtwt_topptweightDown)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "BTaghfSFUp", evtwt_BTaghfSFUp)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "BTaghfSFDown", evtwt_BTaghfSFDown)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "BTaglfSFUp", evtwt_BTaglfSFUp)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "BTaglfSFDown", evtwt_BTaglfSFDown)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "PileupUp", evtwt_PileupUp)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "PileupDown", evtwt_PileupDown)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale1", evtwt_lhescale1)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale2", evtwt_lhescale2)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale3", evtwt_lhescale3)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale4", evtwt_lhescale4)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale6", evtwt_lhescale6)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScale8", evtwt_lhescale8)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScaleDownWeight", evtwt_LHEScaleDownWeight)
-              fillHisto(str(controlR[cr]), "Ele", file, entry, itr, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "nominal"), MET_phi(file, entry, "nominal"), entry.event_LeadJet_pt,  "LHEScaleUpWeight", evtwt_LHEScaleUpWeight)
 
-
-          if (itr == 4 and doSkim and "PreSig" in str(controlR[cr])):
-            #Load tree containers
-            Event_genwtsum[0] = event_genwt
-            Event_flag[0] = entry.event_Event_flag
-            Lepton_pt[0] = entry.event_Lepton_pt
-            Lepton_eta[0] = entry.event_Lepton_eta
-            Lepton_phi[0] = entry.event_Lepton_phi
-            Lepton_mass[0] = entry.event_Lepton_mass
-            LeadJet_pt[0] = entry.event_LeadJet_pt
-            LeadJet_eta[0] = entry.event_LeadJet_eta
-            LeadJet_phi[0] = entry.event_LeadJet_mass
-            LeadJet_btagDeepCSV[0] = entry.event_LeadJet_btag_DeepCSV
-            LeadJet_btagDeepFLV[0] = entry.event_LeadJet_btag_DeepFLV
-            LeadJet_btag[0] = leadjetBTag
-            MET[0] = MET_pt(file, entry, "nominal")
-            MT[0] = MassT
-            HT_Central_pu[0] = HT_Central
-            HT_Central_nopu[0] = entry.event_HT
-            HT_Full_pu[0] = HT_Full_pu_var
-            HT_Full_nopu[0] = HT_Full_nopu_var
-            ST[0] = entry.event_ST
-            ST_v2[0] = entry.event_ST_v2
-            #nVetoElectrons[0] = entry.event_nVetoElectrons
-            #nVetoMuons[0] = entry.event_nVetoMuons
-            nVetoElectrons[0] = neles
-            nVetoMuons[0] = nmuons
-            Mass[0] = entry.event_Mass
-            Mass_v2[0] = entry.event_Mass_v2
-            DR_LepClosestJet[0] = entry.event_DR_LepClosestJet
-            DR_LepClosestJet_pu[0] = dR_lepClosestJet_v2
-            DR_LepleadJet[0] = entry.event_DR_LepleadJet
-            DPHI_LepleadJet[0] = entry.event_DPHI_LepleadJet
-            DPHI_LepMet[0] = entry.event_DPHI_LepMet
-            DPHI_JetMet[0] = entry.event_DPHI_JetMet
-            Angle_MuZ_Jet[0] = entry.event_Angle_MuZ_Jet
-            Angle_MuJet_Met[0] = entry.event_Angle_MuJet_Met
-            bVsW_ratio[0] = entry.event_bVsW_ratio
-            nJets[0] = entry.event_nJets
-            #nCentralJets[0] = entry.nCentralJets
-            nCentralJets[0] = nCentralJets_v2
-            nFwdJets[0] = entry.event_nFwdJets
-            nBTagMed_DeepCSV[0] = entry.event_nBTagMed_DeepCSV
-            nBTagTig_DeepCSV[0] = entry.event_nBTagTig_DeepCSV
-            nBTagMed_DeepFLV[0] = nBTag
-            nBTagTig_DeepFLV[0] = entry.event_nBTagTig_DeepFLV
-            FwdJetPt[0] = entry.event_FwdJetPt
-            FwdJetEta[0] = entry.event_FwdJetEta
-            FwdJetPhi[0] = entry.event_FwdJetPhi
-            STScale_TT[0] = float(st_TTJets_Scaling(file, entry))
-            WPTScale_WJ[0] = float(wpt_WJets_Scaling(file, entry))
-            EvtWt[0] = evtwt_nominal
-            EvtWtv2[0] = evtwt_nominalv2
-            LepClosestJet_v2_pt[0] = lepClosestJet_v2_4vec.Pt()
-            LepClosestJet_v2_eta[0] = lepClosestJet_v2_4vec.Eta()
-            if (lepClosestJet_v2_idx >= 0): LepClosestJet_v2_btagDeepFLV[0] = entry.Jet_btagDeepFlavB[lepClosestJet_v2_idx]
-            else: LepClosestJet_v2_btagDeepFLV[0] = 0
-            M_top[0] = (Lep4vec + Met4vec + lepClosestJet_v2_4vec).M()
-            Mjj_leadJet_CloJet[0] = (leadJet_4vec + lepClosestJet_v2_4vec).M()
-            DR_leadJet_CloJet[0] = leadJet_4vec.DeltaR(lepClosestJet_v2_4vec)
-            LeadJet_btagTight[0] = leadjetBTagTig
-            Lepton_charge[0] = entry.Electron_charge[entry.event_Lepton_idx]
-            Mjj_leaddJet_fwdJet_puT[0] = (leadJet_4vec + fwdJet_T_4vec).M()
-            DR_leaddJet_fwdJet_puT[0] = leadJet_4vec.DeltaR(fwdJet_T_4vec)
-            DR_Lep_fwdJet_puT[0] = Lep4vec.DeltaR(fwdJet_T_4vec)
-            FwdJetPt_puT[0] = FwdJetPt_T
-            FwdJetEta_puT[0] = fwdJeteta_T
-            Mt_JS[0] = Mt_js
-            Mw_JS[0] = Mw_js
-
-        if ((entry.event_MuonTrigFlag >= 1 or entry.event_EleTrigFlag >= 1) and itr == 4 and doSkim and ("PreSig" in str(controlR[cr]))): sktree.Fill()
+          if ((entry.event_MuonTrigFlag >= 1 or entry.event_EleTrigFlag >= 1) and itr == 4 and doSkim and ("PreSig" in str(controlR[cr]))): sktree.Fill()
 
 
     #Signal Selection
@@ -1327,10 +1271,10 @@ for i in  range(1):
         elif (entry.event_Event_flag == 11 and entry.event_EleTrigFlag >= 1):
           CHL = "Ele"
         if ('Mu' in CHL or 'Ele' in CHL):
-          if (int(cutjerUp) == 17):   fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjerUp)-1, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "jerUp"), MET_phi(file, entry, "jerUp"), Jet_pt(file, entry, entry.event_LeadJet_idx, "jerUp"),  "jerUp", evtwt_nominal)
-          if (int(cutjerDown) == 17): fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjerDown)-1, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "jerDown"), MET_phi(file, entry, "jerDown"), Jet_pt(file, entry, entry.event_LeadJet_idx, "jerDown"), "jerDown", evtwt_nominal)
-          if (int(cutjesUp) == 17):   fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjesUp)-1, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "jesUp"), MET_phi(file, entry, "jesUp"), Jet_pt(file, entry, entry.event_LeadJet_idx, "jesUp"), "jesUp", evtwt_nominal)
-          if (int(cutjesDown) == 17): fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjesDown)-1, nBTag, MassT, HT_Central, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "jesDown"), MET_phi(file, entry, "jesDown"), Jet_pt(file, entry, entry.event_LeadJet_idx, "jesDown"),"jesDown", evtwt_nominal)
+          if (int(cutjerUp) == 17):   fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjerUp)-1, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "jerUp"), MET_phi(file, entry, "jerUp"), Jet_pt(file, entry, entry.event_LeadJet_idx, "jerUp"),  "jerUp", evtwt_nominal)
+          if (int(cutjerDown) == 17): fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjerDown)-1, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "jerDown"), MET_phi(file, entry, "jerDown"), Jet_pt(file, entry, entry.event_LeadJet_idx, "jerDown"), "jerDown", evtwt_nominal)
+          if (int(cutjesUp) == 17):   fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjesUp)-1, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "jesUp"), MET_phi(file, entry, "jesUp"), Jet_pt(file, entry, entry.event_LeadJet_idx, "jesUp"), "jesUp", evtwt_nominal)
+          if (int(cutjesDown) == 17): fillHisto(str(controlR[cr]), CHL, file, entry, int(cutjesDown)-1, nBTag, MassT, HT_Central, leadjetBTagTig, bdtOutput, HEMwt, nCentralJets_v2, dR_lepClosestJet_v2, FwdJetPt_L, FwdJetPt_M, FwdJetPt_T, MET_pt(file, entry, "jesDown"), MET_phi(file, entry, "jesDown"), Jet_pt(file, entry, entry.event_LeadJet_idx, "jesDown"),"jesDown", evtwt_nominal)
 
   #canv.Modified()
   #canv.Update()
